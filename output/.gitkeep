@@ -1,0 +1,2 @@
+Esta pasta recebe as fotos e o index.json gerados in-game.
+O .gitkeep existe só para a pasta vir junto com o download; o conteúdo gerado é ignorado pelo git.

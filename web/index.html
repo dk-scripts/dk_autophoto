@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dk_autophoto</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- Painel principal. Oculto até o Lua mandar "open". -->
+    <div id="app" class="app" hidden>
+        <!-- ── HUD de status (o quadro real é desenhado pelo jogo, não aqui) ── -->
+        <aside class="hud" aria-hidden="true">
+            <div class="hud-card">
+                <span id="vfStatusDot" class="vf-dot"></span>
+                <span id="vfStatus" class="vf-status">READY</span>
+                <span class="hud-sep"></span>
+                <span id="vfCurrent" class="vf-current">—</span>
+            </div>
+        </aside>
+
+        <!-- ── Console de controle ── -->
+        <main class="console">
+            <header class="console-head">
+                <div class="brand">
+                    <div class="brand-mark">◳</div>
+                    <div class="brand-text">
+                        <h1 id="title">Auto Foto</h1>
+                        <p id="subtitle">Tirador automático de fotos de roupas</p>
+                    </div>
+                </div>
+                <button id="btnClose" class="icon-btn" title="Fechar">✕</button>
+            </header>
+
+            <nav class="tabs" role="tablist">
+                <button class="tab is-active" data-tab="categories" id="tabCategories">Categorias</button>
+                <button class="tab" data-tab="camera" id="tabCamera">Câmera</button>
+                <button class="tab" data-tab="capture" id="tabCapture">Captura</button>
+            </nav>
+
+            <!-- ── Aba: Categorias ── -->
+            <section class="panel is-active" data-panel="categories">
+                <div class="panel-actions">
+                    <button class="ghost" id="btnSelectAll">Selecionar tudo</button>
+                    <button class="ghost" id="btnSelectNone">Limpar seleção</button>
+                </div>
+                <p class="hint" id="selectionHint"></p>
+                <div class="group-label" id="lblComponents">Roupas</div>
+                <div class="acc-list" id="gridComponents"></div>
+                <div class="group-label" id="lblProps">Acessórios</div>
+                <div class="acc-list" id="gridProps"></div>
+            </section>
+
+            <!-- ── Aba: Câmera ── -->
+            <section class="panel" data-panel="camera">
+                <div class="seg" id="cameraModeSeg">
+                    <span class="seg-label" id="lblCameraMode">Modo da câmera</span>
+                    <div class="seg-options">
+                        <button class="seg-opt is-active" data-mode="auto" id="optModeAuto">Automática</button>
+                        <button class="seg-opt" data-mode="fixed" id="optModeFixed">Fixa</button>
+                    </div>
+                </div>
+
+                <div class="field" id="activeCategoryField">
+                    <label id="lblActiveCategory">Peça em foco</label>
+                    <select id="activeCategorySel" class="select"></select>
+                </div>
+
+                <div class="seg" id="genderSeg">
+                    <span class="seg-label" id="lblGender">Modelo</span>
+                    <div class="seg-options">
+                        <button class="seg-opt is-active" data-gender="male" id="optMale">Masculino</button>
+                        <button class="seg-opt" data-gender="female" id="optFemale">Feminino</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label id="lblLockCamera">Prender câmera</label>
+                    <select id="lockCamera" class="select"></select>
+                </div>
+
+                <div class="sliders" id="sliders"></div>
+
+                <div class="cam-buttons">
+                    <button class="ghost" id="btnReposition">Reposicionar câmera</button>
+                    <button class="ghost" id="btnResetCamera">Restaurar câmera</button>
+                    <button class="ghost" id="btnSaveProfile">Salvar para esta peça</button>
+                </div>
+                <p class="hint" id="repositionHint"></p>
+
+                <div class="field">
+                    <label id="lblTextures">Texturas por peça</label>
+                    <div class="seg-options inline">
+                        <button class="seg-opt is-active" data-tex="first" id="optTexFirst">Apenas a primeira</button>
+                        <button class="seg-opt" data-tex="all" id="optTexAll">Todas</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Aba: Captura ── -->
+            <section class="panel" data-panel="capture">
+                <div class="progress-card">
+                    <div class="progress-head">
+                        <span id="capStatus" class="status-pill">Pronto</span>
+                        <span id="capCounter" class="counter mono">0 / 0</span>
+                    </div>
+                    <div class="bar"><div id="bar" class="bar-fill"></div></div>
+                    <div class="stats">
+                        <div class="stat"><span class="stat-k" id="lblSaved">Salvas</span><span class="stat-v mono" id="stSaved">0</span></div>
+                        <div class="stat"><span class="stat-k" id="lblFailed">Falhas</span><span class="stat-v mono" id="stFailed">0</span></div>
+                        <div class="stat"><span class="stat-k" id="lblRemaining">Restantes</span><span class="stat-v mono" id="stRemaining">0</span></div>
+                        <div class="stat"><span class="stat-k" id="lblEta">Tempo est.</span><span class="stat-v mono" id="stEta">—</span></div>
+                    </div>
+                </div>
+
+                <div class="run-controls">
+                    <button class="primary" id="btnStart">Iniciar captura</button>
+                    <button class="ghost" id="btnPause" hidden>Pausar</button>
+                    <button class="ghost" id="btnResume" hidden>Retomar</button>
+                    <button class="danger" id="btnStop" hidden>Parar</button>
+                    <button class="ghost" id="btnRetry" hidden>Repetir falhas</button>
+                </div>
+
+            </section>
+
+            <footer class="console-foot">
+                <span class="foot-id mono">dk_autophoto</span>
+                <span class="foot-by">DK Development · MIT</span>
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

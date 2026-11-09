@@ -1,0 +1,4 @@
+# Fotos e index.json gerados in-game ficam só no seu servidor.
+# A pasta output/ já vem no repositório (via .gitkeep), então ninguém precisa criá-la.
+output/*
+!output/.gitkeep
